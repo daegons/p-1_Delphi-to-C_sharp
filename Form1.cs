@@ -57,8 +57,8 @@ namespace p_1_Delphi_to_C_sharp
 
         private int FDebCount = 0; // 디버그 메시지 카운터 초기화
 
-        //REG_mA = $0200;
-        private const ushort REG_mA = 0x0200;
+        
+        private const ushort REG_mA = 0x0200; //REG_mA = $0200;
 
         private int FMeasCount = 0;
 
@@ -93,17 +93,36 @@ namespace p_1_Delphi_to_C_sharp
         }
         private void InitializeTimers()
         {
-            Timer_Com1Rx.Interval = FCom1_RxDelay;
+            //Timer_Com1Rx.Interval = FCom1_RxDelay;
+            //Timer_Com1Rx.Tick += Timer_Com1Rx_Tick;
+            //Timer_Com1Tx.Interval = FCom1_TxDelay;
+            //Timer_Com1Tx.Tick += Timer_Com1Tx_Tick;
+            //Timer_Com2Rx.Interval = FCom2_RxDelay;
+            //Timer_Com2Rx.Tick += Timer_Com2Rx_Tick;
+            //Timer_Com2Tx.Interval = FCom2_TxDelay;
+            //Timer_Com2Tx.Tick += Timer_Com2Tx_Tick;
+            //Timer_RunProcess.Tick += Timer_RunProcess_Tick;
+
+
+            // FCom1_RxDelay 및 FCom1_TxDelay가 0일 경우 최소 1로 설정
+            Timer_Com1Rx.Interval = FCom1_RxDelay > 0 ? FCom1_RxDelay : 1;
             Timer_Com1Rx.Tick += Timer_Com1Rx_Tick;
-            Timer_Com1Tx.Interval = FCom1_TxDelay;
+
+            Timer_Com1Tx.Interval = FCom1_TxDelay > 0 ? FCom1_TxDelay : 1;
             Timer_Com1Tx.Tick += Timer_Com1Tx_Tick;
 
-            Timer_Com2Rx.Interval = FCom2_RxDelay;
+            // FCom2_RxDelay 및 FCom2_TxDelay가 0일 경우 최소 1로 설정
+            Timer_Com2Rx.Interval = FCom2_RxDelay > 0 ? FCom2_RxDelay : 1;
             Timer_Com2Rx.Tick += Timer_Com2Rx_Tick;
-            Timer_Com2Tx.Interval = FCom2_TxDelay;
+
+            Timer_Com2Tx.Interval = FCom2_TxDelay > 0 ? FCom2_TxDelay : 1;
             Timer_Com2Tx.Tick += Timer_Com2Tx_Tick;
 
+            // Timer_RunProcess의 Interval을 원하는 기본값(예: 1000ms)으로 설정
+            Timer_RunProcess.Interval = 1000; // 예시로 1초로 설정
             Timer_RunProcess.Tick += Timer_RunProcess_Tick;
+
+
         }
 
         private void SetAnalogZero() => SendCommandWithParam(Edit_AOffset, "#O1");
@@ -750,6 +769,11 @@ namespace p_1_Delphi_to_C_sharp
             }
         }
         private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Button_Start_Click(object sender, EventArgs e)
         {
 
         }

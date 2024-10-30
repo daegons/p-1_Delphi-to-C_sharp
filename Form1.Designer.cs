@@ -415,6 +415,7 @@
             this.Button_Start.TabIndex = 12;
             this.Button_Start.Text = "START";
             this.Button_Start.UseVisualStyleBackColor = true;
+            this.Button_Start.Click += new System.EventHandler(this.Button_Start_Click);
             // 
             // tabPage2
             // 
