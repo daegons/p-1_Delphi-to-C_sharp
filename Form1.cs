@@ -15,25 +15,53 @@ namespace p_1_Delphi_to_C_sharp
 {
     public partial class Form1 : Form
     {
+        //---------------함수 변환---------------//
+        private const int ADC_CH_MAX = 8;
+        private const double LOW_REF_mA = 4.000;
+        private const double HIGH_REF_mA = 19.500;
+
+        private SerialPort ComPort1 = new SerialPort();
+        private SerialPort ComPort2 = new SerialPort();
+        private Timer Timer_Com1Rx = new Timer();
+        private Timer Timer_Com1Tx = new Timer();
+        private Timer Timer_Com2Rx = new Timer();
+        private Timer Timer_Com2Tx = new Timer();
+        private Timer Timer_RunPross = new Timer();
+
+        private int FCom1_RxDelay, FCom1_TxDelay, FCom2_RxDelay, FCom2_TxDelay;
+        private int FTimerSec;
+        private double FPresHighLevel;
+        private string FCom1_RxStr = "", FCom2_RxStr = "";
+        private string FCom1_TxCmd = "", FCom2_TxCmd = "";
+
+        private double[] FBuff_mA = new double[ADC_CH_MAX];
+        private double[] FBuff_mH2O = new double[ADC_CH_MAX];
+        private double[] FMeasLow = new double[5];
+        private double[] FMeasHigh = new double[5];
+        //---------------함수 변환---------------//
         public Form1()
         {
             InitializeComponent();
+            //---------------함수 변환---------------//
+            ComPort1.DataReceived += ComPort1_DataReceived;
+            ComPort2.DataReceived += ComPort2_DataReceived;
+
+            Timer_Com1Rx.Interval = FCom1_RxDelay;
+            Timer_Com1Rx.Tick += Timer_Com1Rx_Tick;
+            Timer_Com1Tx.Interval = FCom1_TxDelay;
+            Timer_Com1Tx.Tick += Timer_Com1Tx_Tick;
+
+            Timer_Com2Rx.Interval = FCom2_RxDelay;
+            Timer_Com2Rx.Tick += Timer_Com2Rx_Tick;
+            Timer_Com2Tx.Interval = FCom2_TxDelay;
+            Timer_Com2Tx.Tick += Timer_Com2Tx_Tick;
+
+            Timer_RunPross.Tick += Timer_RunPross_Tick;
+            //---------------함수 변환---------------//
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //---------------함수 변환---------------//
         private void Button_AReset_Click(object sender, EventArgs e)
         {
             // A Reset 명령 전송
@@ -1281,7 +1309,14 @@ namespace p_1_Delphi_to_C_sharp
             StatusBar.Panels[5].Text = "Step: " + FRunStep.ToString();
             StatusBar.Panels[6].Text = "Time: " + FTimerSec.ToString();
         }
-        //초기 생성 파일
+        //---------------함수 변환---------------//
+
+
+        //---------------추가 함수--------------//
+
+        //---------------추가 함수--------------//
+
+        //초기 생성 파일 삭제X
         private void Form1_Load(object sender, EventArgs e)
         {
 
