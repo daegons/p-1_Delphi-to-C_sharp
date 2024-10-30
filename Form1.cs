@@ -53,6 +53,17 @@ namespace p_1_Delphi_to_C_sharp
         private Image ledOnImage;   // 켜진 LED 이미지
         private Image ledOffImage;  // 꺼진 LED 이미지
 
+        private int FChIdx = 1; // 초기값 설정, io보드 채널번호?
+
+        private int FDebCount = 0; // 디버그 메시지 카운터 초기화
+
+        //REG_mA = $0200;
+        private const ushort REG_mA = 0x0200;
+
+        private int FMeasCount = 0;
+
+        private const int CALI_BUFF_MAX = 5; // 버퍼 크기에 맞게 설정
+
         public Form1()
         {
             InitializeComponent();
@@ -113,7 +124,7 @@ namespace p_1_Delphi_to_C_sharp
                 if ((int)Timer_Com2Rx.Tag > 2)
                 {
                     Timer_Com2Rx.Tag = 0;
-                    Label_MeasValue.Text = STR_NON_VALUE;
+                    Panel_MeasValue.Text = STR_NON_VALUE;
                 }
             }
 
@@ -228,7 +239,7 @@ namespace p_1_Delphi_to_C_sharp
         private void DispMeasMode()
         {
             double measVal = FBuff_mA[FChIdx];
-            Label_MeasValue.Text = measVal <= 3.0 ? STR_NON_VALUE : measVal.ToString("0.000");
+            Panel_MeasValue.Text = measVal <= 3.0 ? STR_NON_VALUE : measVal.ToString("0.000");
         }
 
         private void DispTestOutMode()
@@ -254,13 +265,42 @@ namespace p_1_Delphi_to_C_sharp
 
         private void SetDisplayValues(string measValue, string measError, Color backgroundColor)
         {
-            Label_MeasValue.Text = measValue;
+            Panel_MeasValue.Text = measValue;
             Label_MeasError.Text = measError;
 
-            Label_MeasValue.Parent.BackColor = backgroundColor;
+            Panel_MeasValue.Parent.BackColor = backgroundColor;
             Label_RefValue.Parent.BackColor = backgroundColor;
             Label_MeasError.Parent.BackColor = backgroundColor;
             Label_RefError.Parent.BackColor = backgroundColor;
+        }
+
+        // CRC 검사를 위한 메서드
+        private bool CheckCRC_MODBUS(string data)
+        {
+            // Modbus CRC 계산 로직
+            ushort computedCRC = Calculate_CRC_MODBUS(data.Substring(0, data.Length - 2));
+            ushort receivedCRC = BitConverter.ToUInt16(Encoding.ASCII.GetBytes(data.Substring(data.Length - 2)), 0);
+
+            return computedCRC == receivedCRC;
+        }
+
+        // Modbus CRC 계산 메서드
+        private ushort Calculate_CRC_MODBUS(string data)
+        {
+            ushort crc = 0xFFFF;
+
+            foreach (byte b in Encoding.ASCII.GetBytes(data))
+            {
+                crc ^= b;
+                for (int i = 0; i < 8; i++)
+                {
+                    bool lsbSet = (crc & 0x0001) != 0;
+                    crc >>= 1;
+                    if (lsbSet) crc ^= 0xA001;
+                }
+            }
+
+            return crc;
         }
 
         private void Timer_Com1Rx_Tick(object sender, EventArgs e)
@@ -288,7 +328,32 @@ namespace p_1_Delphi_to_C_sharp
             }
             FDebCount = 0;
         }
+        // 다중 읽기 명령 응답 처리
+        private void DispMultiRead_MODBUS(string rxStr)
+        {
+            // 수신된 다중 읽기 데이터를 디버그 로그에 출력
+            fDebug.WriteLine("Received Multi-Read MODBUS data: " + rxStr);
 
+            // 필요한 추가 데이터 파싱 및 표시 작업을 여기에 작성
+        }
+
+        // 단일 쓰기 명령 응답 처리
+        private void DispSingleWrite_MODBUS(string rxStr)
+        {
+            // 수신된 단일 쓰기 데이터를 디버그 로그에 출력
+            fDebug.WriteLine("Received Single-Write MODBUS data: " + rxStr);
+
+            // 필요한 추가 데이터 파싱 및 표시 작업을 여기에 작성
+        }
+
+        // 다중 쓰기 명령 응답 처리
+        private void DispMultiWrite_MODBUS(string rxStr)
+        {
+            // 수신된 다중 쓰기 데이터를 디버그 로그에 출력
+            fDebug.WriteLine("Received Multi-Write MODBUS data: " + rxStr);
+
+            // 필요한 추가 데이터 파싱 및 표시 작업을 여기에 작성
+        }
         private void HandleModbusResponse(string rxStr)
         {
             switch ((byte)rxStr[2])
@@ -333,9 +398,17 @@ namespace p_1_Delphi_to_C_sharp
 
         private void DispTestPressMode(double value)
         {
-            Label_MeasValue.Text = value.ToString("0.0");
+            Panel_MeasValue.Text = value.ToString("0.0");
         }
 
+        private void Com1_TxStr(string command)
+        {
+            if (ComPort1.IsOpen)
+            {
+                ComPort1.Write(command);  // 명령을 ComPort1로 전송
+                ToggleLED(LED_Tx1);       // 전송 LED를 토글
+            }
+        }
         private void Timer_Com1Tx_Tick(object sender, EventArgs e)
         {
             Timer_Com1Tx.Enabled = false;
@@ -371,8 +444,10 @@ namespace p_1_Delphi_to_C_sharp
         {
             FTimerSec += 1;
             ExecuteRunMode();
-            StatusBar.Panels[5].Text = "Step: " + FRunStep;
-            StatusBar.Panels[6].Text = "Time: " + FTimerSec;
+
+            // StatusStrip의 ToolStripStatusLabel에 Step과 Time을 표시
+            toolStripStatusLabelStep.Text = "Step: " + FRunStep;
+            toolStripStatusLabelTime.Text = "Time: " + FTimerSec;
         }
 
 
@@ -396,9 +471,26 @@ namespace p_1_Delphi_to_C_sharp
                     break;
             }
         }
+
+        // 기준 전류값을 설정하는 메서드
+        private void SetRef_mA(int refLevel)
+        {
+            double referenceValue;
+
+            // refLevel이 0일 경우 4mA, 1일 경우 19.5mA를 설정
+            if (refLevel == 0)
+                referenceValue = 4.0;
+            else if (refLevel == 1)
+                referenceValue = 19.5;
+            else
+                throw new ArgumentOutOfRangeException("refLevel", "Invalid reference level");
+
+            // 기준 전류값을 표시할 레이블이나 다른 UI 요소에 설정
+            Label_RefValue.Text = referenceValue.ToString("0.0");
+        }
         private void RunTestOut()
         {
-            string strVal = Label_MeasValue.Text;
+            string strVal = Panel_MeasValue.Text;
             if (strVal != STR_NON_VALUE && !string.IsNullOrEmpty(strVal))
             {
                 switch (FRunStep)
@@ -451,9 +543,12 @@ namespace p_1_Delphi_to_C_sharp
         }
         private void RunSetupOut()
         {
-            string strVal = Label_MeasValue.Text;
+            string strVal = Panel_MeasValue.Text;
             if (strVal != STR_NON_VALUE && !string.IsNullOrEmpty(strVal))
             {
+                // refError를 switch문 외부에 선언하고 초기화
+                double refError = double.Parse(Label_RefError.Text);
+
                 switch (FRunStep)
                 {
                     case 0:
@@ -501,7 +596,6 @@ namespace p_1_Delphi_to_C_sharp
                         else
                         {
                             // Analyze 4mA data
-                            double refError = double.Parse(Label_RefError.Text);
                             for (int i = 0; i < FMeasLow.Length; i++)
                             {
                                 for (int j = 0; j < FMeasLow.Length; j++)
@@ -536,7 +630,6 @@ namespace p_1_Delphi_to_C_sharp
                         else
                         {
                             // Analyze 20mA data
-                            refError = double.Parse(Label_RefError.Text);
                             for (int i = 0; i < FMeasHigh.Length; i++)
                             {
                                 for (int j = 0; j < FMeasHigh.Length; j++)
@@ -573,9 +666,10 @@ namespace p_1_Delphi_to_C_sharp
                 FTimerSec = 0;
             }
         }
+
         private void RunTestPres()
         {
-            string strVal = Label_MeasValue.Text;
+            string strVal = Panel_MeasValue.Text;
 
             if (strVal != STR_NON_VALUE && !string.IsNullOrEmpty(strVal))
             {
@@ -594,7 +688,7 @@ namespace p_1_Delphi_to_C_sharp
         }
         private void RunSetupPres()
         {
-            string strVal = Label_MeasValue.Text;
+            string strVal = Panel_MeasValue.Text;
 
             if (strVal != STR_NON_VALUE && !string.IsNullOrEmpty(strVal))
             {

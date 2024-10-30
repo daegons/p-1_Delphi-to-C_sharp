@@ -36,12 +36,18 @@
             this.Edit_PGain = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.Edit_POffset = new System.Windows.Forms.TextBox();
-            this.Label_MeasValue = new System.Windows.Forms.Label();
+            this.Panel_MeasValue = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.CheckBox_AutoLoop = new System.Windows.Forms.CheckBox();
             this.LED = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label17 = new System.Windows.Forms.Label();
+            this.Label_MeasError = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.Label_RefError = new System.Windows.Forms.Label();
+            this.Panel_Ref = new System.Windows.Forms.Label();
+            this.Label_RefValue = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.LED_Rx2 = new System.Windows.Forms.PictureBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -54,6 +60,7 @@
             this.Button_Stop = new System.Windows.Forms.Button();
             this.Button_Start = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.CheckBox_RxHexView = new System.Windows.Forms.CheckBox();
             this.Button_SetOut20mA = new System.Windows.Forms.Button();
             this.Button_PZero = new System.Windows.Forms.Button();
             this.Button_SetOut4mA = new System.Windows.Forms.Button();
@@ -70,6 +77,12 @@
             this.Edit_TxDelay1 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.Edit_RxDelay1 = new System.Windows.Forms.TextBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabelStep = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelTime = new System.Windows.Forms.ToolStripStatusLabel();
+            this.Label_Message = new System.Windows.Forms.Label();
+            this.Button_PSetValue = new System.Windows.Forms.Button();
+            this.Panel_Message = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.LED)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -78,12 +91,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.LED_Tx2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LED_Tx1)).BeginInit();
             this.tabPage2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.Panel_Message.SuspendLayout();
             this.SuspendLayout();
             // 
             // Edit_AOffset
             // 
             this.Edit_AOffset.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.Edit_AOffset.Location = new System.Drawing.Point(16, 251);
+            this.Edit_AOffset.Location = new System.Drawing.Point(12, 309);
             this.Edit_AOffset.Name = "Edit_AOffset";
             this.Edit_AOffset.Size = new System.Drawing.Size(77, 26);
             this.Edit_AOffset.TabIndex = 0;
@@ -91,7 +106,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 236);
+            this.label1.Location = new System.Drawing.Point(10, 294);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(65, 12);
             this.label1.TabIndex = 1;
@@ -100,7 +115,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(97, 236);
+            this.label2.Location = new System.Drawing.Point(93, 294);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 12);
             this.label2.TabIndex = 3;
@@ -109,7 +124,7 @@
             // Edit_AGain
             // 
             this.Edit_AGain.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.Edit_AGain.Location = new System.Drawing.Point(99, 251);
+            this.Edit_AGain.Location = new System.Drawing.Point(95, 309);
             this.Edit_AGain.Name = "Edit_AGain";
             this.Edit_AGain.Size = new System.Drawing.Size(77, 26);
             this.Edit_AGain.TabIndex = 2;
@@ -117,7 +132,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(97, 285);
+            this.label3.Location = new System.Drawing.Point(93, 343);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 12);
             this.label3.TabIndex = 5;
@@ -126,7 +141,7 @@
             // Edit_PGain
             // 
             this.Edit_PGain.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.Edit_PGain.Location = new System.Drawing.Point(99, 300);
+            this.Edit_PGain.Location = new System.Drawing.Point(95, 358);
             this.Edit_PGain.Name = "Edit_PGain";
             this.Edit_PGain.Size = new System.Drawing.Size(77, 26);
             this.Edit_PGain.TabIndex = 4;
@@ -134,7 +149,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(14, 285);
+            this.label4.Location = new System.Drawing.Point(10, 343);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(65, 12);
             this.label4.TabIndex = 7;
@@ -143,28 +158,28 @@
             // Edit_POffset
             // 
             this.Edit_POffset.Font = new System.Drawing.Font("굴림", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.Edit_POffset.Location = new System.Drawing.Point(16, 300);
+            this.Edit_POffset.Location = new System.Drawing.Point(12, 358);
             this.Edit_POffset.Name = "Edit_POffset";
             this.Edit_POffset.Size = new System.Drawing.Size(77, 26);
             this.Edit_POffset.TabIndex = 6;
             // 
-            // Label_MeasValue
+            // Panel_MeasValue
             // 
-            this.Label_MeasValue.AutoSize = true;
-            this.Label_MeasValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Label_MeasValue.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.Label_MeasValue.Location = new System.Drawing.Point(17, 89);
-            this.Label_MeasValue.Name = "Label_MeasValue";
-            this.Label_MeasValue.Size = new System.Drawing.Size(117, 37);
-            this.Label_MeasValue.TabIndex = 8;
-            this.Label_MeasValue.Text = "00000";
+            this.Panel_MeasValue.AutoSize = true;
+            this.Panel_MeasValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Panel_MeasValue.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Panel_MeasValue.Location = new System.Drawing.Point(15, 116);
+            this.Panel_MeasValue.Name = "Panel_MeasValue";
+            this.Panel_MeasValue.Size = new System.Drawing.Size(117, 37);
+            this.Panel_MeasValue.TabIndex = 8;
+            this.Panel_MeasValue.Text = "00000";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.label6.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label6.Location = new System.Drawing.Point(15, 45);
+            this.label6.Location = new System.Drawing.Point(13, 72);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(120, 35);
             this.label6.TabIndex = 9;
@@ -200,6 +215,14 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.Panel_Message);
+            this.tabPage1.Controls.Add(this.Button_PSetValue);
+            this.tabPage1.Controls.Add(this.label17);
+            this.tabPage1.Controls.Add(this.Label_MeasError);
+            this.tabPage1.Controls.Add(this.label16);
+            this.tabPage1.Controls.Add(this.Label_RefError);
+            this.tabPage1.Controls.Add(this.Panel_Ref);
+            this.tabPage1.Controls.Add(this.Label_RefValue);
             this.tabPage1.Controls.Add(this.label13);
             this.tabPage1.Controls.Add(this.LED_Rx2);
             this.tabPage1.Controls.Add(this.label12);
@@ -215,7 +238,7 @@
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.Edit_POffset);
-            this.tabPage1.Controls.Add(this.Label_MeasValue);
+            this.tabPage1.Controls.Add(this.Panel_MeasValue);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.LED);
             this.tabPage1.Controls.Add(this.Edit_PGain);
@@ -231,10 +254,76 @@
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.label17.Font = new System.Drawing.Font("굴림", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label17.Location = new System.Drawing.Point(265, 79);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(120, 27);
+            this.label17.TabIndex = 32;
+            this.label17.Text = "측정오차";
+            // 
+            // Label_MeasError
+            // 
+            this.Label_MeasError.AutoSize = true;
+            this.Label_MeasError.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Label_MeasError.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Label_MeasError.Location = new System.Drawing.Point(268, 115);
+            this.Label_MeasError.Name = "Label_MeasError";
+            this.Label_MeasError.Size = new System.Drawing.Size(117, 37);
+            this.Label_MeasError.TabIndex = 31;
+            this.Label_MeasError.Text = "00000";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.label16.Font = new System.Drawing.Font("굴림", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label16.Location = new System.Drawing.Point(389, 79);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(120, 27);
+            this.label16.TabIndex = 30;
+            this.label16.Text = "허용오차";
+            // 
+            // Label_RefError
+            // 
+            this.Label_RefError.AutoSize = true;
+            this.Label_RefError.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Label_RefError.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Label_RefError.Location = new System.Drawing.Point(392, 115);
+            this.Label_RefError.Name = "Label_RefError";
+            this.Label_RefError.Size = new System.Drawing.Size(117, 37);
+            this.Label_RefError.TabIndex = 29;
+            this.Label_RefError.Text = "00000";
+            // 
+            // Panel_Ref
+            // 
+            this.Panel_Ref.AutoSize = true;
+            this.Panel_Ref.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.Panel_Ref.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Panel_Ref.Location = new System.Drawing.Point(139, 72);
+            this.Panel_Ref.Name = "Panel_Ref";
+            this.Panel_Ref.Size = new System.Drawing.Size(120, 35);
+            this.Panel_Ref.TabIndex = 28;
+            this.Panel_Ref.Text = "기준값";
+            // 
+            // Label_RefValue
+            // 
+            this.Label_RefValue.AutoSize = true;
+            this.Label_RefValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Label_RefValue.Font = new System.Drawing.Font("굴림", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Label_RefValue.Location = new System.Drawing.Point(141, 116);
+            this.Label_RefValue.Name = "Label_RefValue";
+            this.Label_RefValue.Size = new System.Drawing.Size(117, 37);
+            this.Label_RefValue.TabIndex = 27;
+            this.Label_RefValue.Text = "00000";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(541, 86);
+            this.label13.Location = new System.Drawing.Point(607, 67);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(26, 12);
             this.label13.TabIndex = 26;
@@ -242,7 +331,7 @@
             // 
             // LED_Rx2
             // 
-            this.LED_Rx2.Location = new System.Drawing.Point(543, 101);
+            this.LED_Rx2.Location = new System.Drawing.Point(609, 82);
             this.LED_Rx2.Name = "LED_Rx2";
             this.LED_Rx2.Size = new System.Drawing.Size(24, 25);
             this.LED_Rx2.TabIndex = 25;
@@ -251,7 +340,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(541, 40);
+            this.label12.Location = new System.Drawing.Point(607, 21);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(26, 12);
             this.label12.TabIndex = 24;
@@ -259,7 +348,7 @@
             // 
             // LED_Rx1
             // 
-            this.LED_Rx1.Location = new System.Drawing.Point(543, 55);
+            this.LED_Rx1.Location = new System.Drawing.Point(609, 36);
             this.LED_Rx1.Name = "LED_Rx1";
             this.LED_Rx1.Size = new System.Drawing.Size(24, 25);
             this.LED_Rx1.TabIndex = 23;
@@ -268,7 +357,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(494, 86);
+            this.label14.Location = new System.Drawing.Point(560, 67);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(26, 12);
             this.label14.TabIndex = 22;
@@ -276,7 +365,7 @@
             // 
             // LED_Tx2
             // 
-            this.LED_Tx2.Location = new System.Drawing.Point(496, 101);
+            this.LED_Tx2.Location = new System.Drawing.Point(562, 82);
             this.LED_Tx2.Name = "LED_Tx2";
             this.LED_Tx2.Size = new System.Drawing.Size(24, 25);
             this.LED_Tx2.TabIndex = 21;
@@ -285,7 +374,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(494, 40);
+            this.label11.Location = new System.Drawing.Point(560, 21);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(26, 12);
             this.label11.TabIndex = 16;
@@ -293,7 +382,7 @@
             // 
             // LED_Tx1
             // 
-            this.LED_Tx1.Location = new System.Drawing.Point(496, 55);
+            this.LED_Tx1.Location = new System.Drawing.Point(562, 36);
             this.LED_Tx1.Name = "LED_Tx1";
             this.LED_Tx1.Size = new System.Drawing.Size(24, 25);
             this.LED_Tx1.TabIndex = 15;
@@ -329,6 +418,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.CheckBox_RxHexView);
             this.tabPage2.Controls.Add(this.Button_SetOut20mA);
             this.tabPage2.Controls.Add(this.Button_PZero);
             this.tabPage2.Controls.Add(this.Button_SetOut4mA);
@@ -352,6 +442,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_RxHexView
+            // 
+            this.CheckBox_RxHexView.AutoSize = true;
+            this.CheckBox_RxHexView.Location = new System.Drawing.Point(247, 56);
+            this.CheckBox_RxHexView.Name = "CheckBox_RxHexView";
+            this.CheckBox_RxHexView.Size = new System.Drawing.Size(97, 16);
+            this.CheckBox_RxHexView.TabIndex = 18;
+            this.CheckBox_RxHexView.Text = "Rx Hex View";
+            this.CheckBox_RxHexView.UseVisualStyleBackColor = true;
             // 
             // Button_SetOut20mA
             // 
@@ -514,11 +614,61 @@
             this.Edit_RxDelay1.Size = new System.Drawing.Size(74, 22);
             this.Edit_RxDelay1.TabIndex = 0;
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabelStep,
+            this.toolStripStatusLabelTime});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 428);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip1.TabIndex = 13;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabelStep
+            // 
+            this.toolStripStatusLabelStep.Name = "toolStripStatusLabelStep";
+            this.toolStripStatusLabelStep.Size = new System.Drawing.Size(34, 17);
+            this.toolStripStatusLabelStep.Text = "Step";
+            // 
+            // toolStripStatusLabelTime
+            // 
+            this.toolStripStatusLabelTime.Name = "toolStripStatusLabelTime";
+            this.toolStripStatusLabelTime.Size = new System.Drawing.Size(36, 17);
+            this.toolStripStatusLabelTime.Text = "Time";
+            // 
+            // Label_Message
+            // 
+            this.Label_Message.BackColor = System.Drawing.Color.Transparent;
+            this.Label_Message.Location = new System.Drawing.Point(114, 14);
+            this.Label_Message.Name = "Label_Message";
+            this.Label_Message.Size = new System.Drawing.Size(259, 40);
+            this.Label_Message.TabIndex = 33;
+            this.Label_Message.Text = "라벨";
+            // 
+            // Button_PSetValue
+            // 
+            this.Button_PSetValue.Location = new System.Drawing.Point(438, 199);
+            this.Button_PSetValue.Name = "Button_PSetValue";
+            this.Button_PSetValue.Size = new System.Drawing.Size(71, 41);
+            this.Button_PSetValue.TabIndex = 34;
+            this.Button_PSetValue.Text = "설 정";
+            this.Button_PSetValue.UseVisualStyleBackColor = true;
+            // 
+            // Panel_Message
+            // 
+            this.Panel_Message.Controls.Add(this.Label_Message);
+            this.Panel_Message.Location = new System.Drawing.Point(12, 6);
+            this.Panel_Message.Name = "Panel_Message";
+            this.Panel_Message.Size = new System.Drawing.Size(497, 63);
+            this.Panel_Message.TabIndex = 35;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -533,7 +683,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.LED_Tx1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.Panel_Message.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -547,7 +701,7 @@
         private System.Windows.Forms.TextBox Edit_PGain;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox Edit_POffset;
-        private System.Windows.Forms.Label Label_MeasValue;
+        private System.Windows.Forms.Label Panel_MeasValue;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox CheckBox_AutoLoop;
         private System.Windows.Forms.PictureBox LED;
@@ -581,6 +735,19 @@
         private System.Windows.Forms.Button Button_SetOut4mA;
         private System.Windows.Forms.Button Button_AReset;
         private System.Windows.Forms.Button Button_PReset;
+        private System.Windows.Forms.Label Label_RefError;
+        private System.Windows.Forms.Label Panel_Ref;
+        private System.Windows.Forms.Label Label_RefValue;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label Label_MeasError;
+        private System.Windows.Forms.CheckBox CheckBox_RxHexView;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelStep;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelTime;
+        private System.Windows.Forms.Label Label_Message;
+        private System.Windows.Forms.Button Button_PSetValue;
+        private System.Windows.Forms.Panel Panel_Message;
     }
 }
 
