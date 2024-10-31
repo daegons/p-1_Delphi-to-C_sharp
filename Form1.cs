@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace p_1_Delphi_to_C_sharp
 {
@@ -69,14 +70,65 @@ namespace p_1_Delphi_to_C_sharp
             InitializeComponent();
             InitializePorts();
             InitializeTimers();
+            LoadAvailablePorts(); // 콤보박스에 사용 가능한 포트를 로드
             fDebug = new DebugForm(); // DebugForm 인스턴스 생성
             // 설정 파일 초기화
             string configFilePath = Path.Combine(Application.StartupPath, "Setup.ini");
             FSetup = new IniFile(configFilePath);
             ledOnImage = Properties.Resources.LedOn;   // 켜진 LED 이미지
             ledOffImage = Properties.Resources.LedOff; // 꺼진 LED 이미지
+
+            LoadPortSettings(); // 포트 설정을 불러오기
+            Button_Start.Enabled = false; // Start 버튼 비활성화
         }
 
+        private void LoadPortSettings()
+        {
+            // 설정 파일에서 포트 이름을 불러와 콤보박스에 설정
+            string port1 = FSetup.ReadString("ComPort", "Port1", "");
+            string port2 = FSetup.ReadString("ComPort", "Port2", "");
+
+            if (!string.IsNullOrEmpty(port1) && ComboBox_ComPort1.Items.Contains(port1))
+            {
+                ComboBox_ComPort1.SelectedItem = port1;
+                ComPort1.PortName = port1;
+            }
+
+            if (!string.IsNullOrEmpty(port2) && ComboBox_ComPort2.Items.Contains(port2))
+            {
+                ComboBox_ComPort2.SelectedItem = port2;
+                ComPort2.PortName = port2;
+            }
+        }
+        private void EnableStartButton()
+        {
+            Button_Start.Enabled = true; // Start 버튼 활성화
+        }
+        private void LoadAvailablePorts()
+        {
+            string[] ports = SerialPort.GetPortNames();
+            ComboBox_ComPort1.Items.AddRange(ports);
+            ComboBox_ComPort2.Items.AddRange(ports);
+        }
+        private void ComboBox_ComPort1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // 포트가 닫혀 있는 경우에만 설정 가능
+            if (!ComPort1.IsOpen)
+            {
+                ComPort1.PortName = ComboBox_ComPort1.SelectedItem.ToString();
+                EnableStartButton();
+            }
+        }
+
+        private void ComboBox_ComPort2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // 포트가 닫혀 있는 경우에만 설정 가능
+            if (!ComPort2.IsOpen)
+            {
+                ComPort2.PortName = ComboBox_ComPort2.SelectedItem.ToString();
+                EnableStartButton();
+            }
+        }
         private void InitializePorts()
         {
             ComPort1.DataReceived += ComPort1_DataReceived;
@@ -85,11 +137,26 @@ namespace p_1_Delphi_to_C_sharp
         private void ComPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             FCom1_RxStr += ComPort1.ReadExisting();
+            // 포트1 데이터 수신 처리
+            string data = ComPort1.ReadExisting();
+            Invoke(new MethodInvoker(() => MessageBox.Show("포트1 수신 데이터: " + data)));
         }
 
         private void ComPort2_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            FCom2_RxStr += ComPort2.ReadExisting();
+            string data = ComPort2.ReadExisting();
+            if (!string.IsNullOrEmpty(data))
+            {
+                FCom2_RxStr += data;
+                Console.WriteLine($"[ComPort2 DataReceived] 수신 데이터: {data}");
+            }
+            else
+            {
+                Console.WriteLine("[ComPort2 DataReceived] 데이터가 없습니다.");
+            }
+
+            // RunTestPres를 통해 실시간 UI 업데이트를 시도
+            Invoke(new Action(() => RunTestPres()));
         }
         private void InitializeTimers()
         {
@@ -121,8 +188,23 @@ namespace p_1_Delphi_to_C_sharp
             // Timer_RunProcess의 Interval을 원하는 기본값(예: 1000ms)으로 설정
             Timer_RunProcess.Interval = 1000; // 예시로 1초로 설정
             Timer_RunProcess.Tick += Timer_RunProcess_Tick;
-
-
+            //////////////////////////////////////////////////////
+            Timer_Com2Rx.Interval = 100; // 100ms마다 확인
+            Timer_Com2Rx.Tick += (s, e) =>
+            {
+                if (ComPort2.IsOpen && ComPort2.BytesToRead > 0)
+                {
+                    string data = ComPort2.ReadExisting();
+                    if (!string.IsNullOrEmpty(data))
+                    {
+                        FCom2_RxStr += data;
+                        Console.WriteLine($"[Timer Com2Rx] 데이터 수신: {data}");
+                        RunTestPres();
+                    }
+                }
+            };
+            Timer_Com2Rx.Start();
+            ////////////////////////////////////////////////////////
         }
 
         private void SetAnalogZero() => SendCommandWithParam(Edit_AOffset, "#O1");
@@ -217,13 +299,25 @@ namespace p_1_Delphi_to_C_sharp
             FSetup.WriteString("ComPort", "Port2", ComboBox_ComPort2.Text);
             FSetup.WriteString("ComPort", "RxDelay2", Edit_RxDelay2.Text);
             FSetup.WriteString("ComPort", "TxDelay2", Edit_TxDelay2.Text);
+            // 선택된 포트를 설정 파일에 저장
+            if (ComboBox_ComPort1.SelectedItem != null)
+            {
+                FSetup.WriteString("ComPort", "Port1", ComboBox_ComPort1.SelectedItem.ToString());
+            }
+
+            if (ComboBox_ComPort2.SelectedItem != null)
+            {
+                FSetup.WriteString("ComPort", "Port2", ComboBox_ComPort2.SelectedItem.ToString());
+            }
+
+            MessageBox.Show("포트 설정이 저장되었습니다.");
         }
 
         private void ToggleAutoLoop(bool isEnabled)
         {
             Button_Start.Enabled = !isEnabled;
             Button_Stop.Enabled = isEnabled;
-            CheckBox_AutoLoop.Checked = isEnabled;
+            //CheckBox_AutoLoop.Checked = isEnabled;
         }
 
         private void Button_Debug_Click(object sender, EventArgs e) => fDebug.Show();
@@ -462,7 +556,16 @@ namespace p_1_Delphi_to_C_sharp
         private void Timer_RunProcess_Tick(object sender, EventArgs e)
         {
             FTimerSec += 1;
-            ExecuteRunMode();
+
+            // 차압 검증 모드가 활성화된 경우 RunTestPres 호출
+            if (FRunMode == RunMode.rmTestPre)
+            {
+                RunTestPres(); // 차압 검증 모드에서 실시간 차압 표시
+            }
+            else
+            {
+                ExecuteRunMode(); // 다른 모드 실행
+            }
 
             // StatusStrip의 ToolStripStatusLabel에 Step과 Time을 표시
             toolStripStatusLabelStep.Text = "Step: " + FRunStep;
@@ -488,6 +591,9 @@ namespace p_1_Delphi_to_C_sharp
                 case RunMode.rmSetPre:
                     RunSetupPres();
                     break;
+                default:
+                    MessageBox.Show("작업을 선택하세요.");
+                    break;
             }
         }
 
@@ -507,8 +613,66 @@ namespace p_1_Delphi_to_C_sharp
             // 기준 전류값을 표시할 레이블이나 다른 UI 요소에 설정
             Label_RefValue.Text = referenceValue.ToString("0.0");
         }
+        private void Button_Measure_Click(object sender, EventArgs e)
+        {
+            FRunMode = RunMode.rmNon;
+            ToggleAutoLoop(true); // 루프 모드 활성화
+            EnableStartButton(); // Start 버튼 활성화
+            MessageBox.Show("측정 모드 시작");
+        }
+        private void Button_OutputCheck_Click(object sender, EventArgs e)
+        {
+            FRunMode = RunMode.rmTestOut;
+            ToggleAutoLoop(true); // 루프 모드 활성화
+            EnableStartButton(); // Start 버튼 활성화
+            MessageBox.Show("출력 검증 모드 시작");
+        }
+        private void Button_OutputCalibrate_Click(object sender, EventArgs e)
+        {
+            FRunMode = RunMode.rmSetOut;
+            ToggleAutoLoop(true); // 루프 모드 활성화
+            EnableStartButton(); // Start 버튼 활성화
+            MessageBox.Show("출력 교정 모드 시작");
+        }
+
+        private void Button_PressureCheck_Click(object sender, EventArgs e)
+        {
+            FRunMode = RunMode.rmTestPre;
+            ToggleAutoLoop(true); // 루프 모드 활성화
+            EnableStartButton(); // Start 버튼 활성화
+            MessageBox.Show("차압 검증 모드 시작");
+        }
+
+        private void Button_PressureCalibrate_Click(object sender, EventArgs e)
+        {
+            FRunMode = RunMode.rmSetPre;
+            ToggleAutoLoop(true); // 루프 모드 활성화
+            EnableStartButton(); // Start 버튼 활성화
+            MessageBox.Show("차압 교정 모드 시작");
+        }
+
+        private void Button_Stop_Click(object sender, EventArgs e)
+        {
+            ToggleAutoLoop(false);
+            Timer_RunProcess.Stop();
+
+            if (ComPort1.IsOpen) ComPort1.Close();
+            if (ComPort2.IsOpen) ComPort2.Close();
+
+            ComboBox_ComPort1.Enabled = true;
+            ComboBox_ComPort2.Enabled = true;
+
+            MessageBox.Show("통신 종료");
+        }
+
         private void RunTestOut()
         {
+            if (Panel_Ref == null || Panel_MeasValue == null)
+            {
+                MessageBox.Show("UI 요소가 초기화되지 않았습니다.");
+                return;
+            }
+
             string strVal = Panel_MeasValue.Text;
             if (strVal != STR_NON_VALUE && !string.IsNullOrEmpty(strVal))
             {
@@ -517,11 +681,10 @@ namespace p_1_Delphi_to_C_sharp
                     case 0:
                         if (FTimerSec >= 2)
                         {
-                            if ((int)Panel_Ref.Tag != 0)
+                            if (Panel_Ref?.Tag != null && (int)Panel_Ref.Tag != 0)
                             {
                                 SetRef_mA(0);
                             }
-
                             FRunStep++;
                             FTimerSec = 0;
                             Com2_TxStr("#T0");  // Output 4mA
@@ -546,13 +709,13 @@ namespace p_1_Delphi_to_C_sharp
                         break;
 
                     case 2:
-                        // Future steps can be added here
+                        // 추가적인 단계를 여기에 추가할 수 있습니다.
                         break;
                 }
             }
             else
             {
-                if ((int)Panel_Ref.Tag != 0)
+                if (Panel_Ref?.Tag != null && (int)Panel_Ref.Tag != 0)
                 {
                     SetRef_mA(0);
                 }
@@ -562,11 +725,17 @@ namespace p_1_Delphi_to_C_sharp
         }
         private void RunSetupOut()
         {
+            if (Panel_Ref == null || Panel_MeasValue == null || Label_RefError == null)
+            {
+                MessageBox.Show("필수 UI 요소가 초기화되지 않았습니다.");
+                return;
+            }
+
             string strVal = Panel_MeasValue.Text;
             if (strVal != STR_NON_VALUE && !string.IsNullOrEmpty(strVal))
             {
                 // refError를 switch문 외부에 선언하고 초기화
-                double refError = double.Parse(Label_RefError.Text);
+                double refError = double.TryParse(Label_RefError.Text, out refError) ? refError : 0;
 
                 switch (FRunStep)
                 {
@@ -589,7 +758,7 @@ namespace p_1_Delphi_to_C_sharp
                     case 1:
                         if (FTimerSec >= 2)
                         {
-                            if (Panel_Ref.Tag.ToString() != "0")
+                            if (Panel_Ref.Tag?.ToString() != "0")
                             {
                                 SetRef_mA(0);  // Set low reference value
                             }
@@ -600,84 +769,13 @@ namespace p_1_Delphi_to_C_sharp
                         break;
 
                     case 2:
-                        // Save measurement data
-                        for (int i = 1; i < FMeasLow.Length; i++)
-                        {
-                            FMeasLow[i - 1] = FMeasLow[i];
-                        }
-                        FMeasLow[FMeasLow.Length - 1] = double.Parse(strVal);
-
-                        // Check if buffer is filled
-                        if (FMeasCount < FMeasLow.Length)
-                        {
-                            FMeasCount++;
-                        }
-                        else
-                        {
-                            // Analyze 4mA data
-                            for (int i = 0; i < FMeasLow.Length; i++)
-                            {
-                                for (int j = 0; j < FMeasLow.Length; j++)
-                                {
-                                    double value = Math.Abs(FMeasLow[i] - FMeasLow[j]);
-                                    if (value > refError) return;
-                                }
-                            }
-
-                            // Proceed to the next step
-                            FMeasCount = 0;
-                            FTimerSec = 0;
-                            FRunStep++;
-                            Com2_TxStr("#T1");  // Output 19.5mA
-                            SetRef_mA(1);  // Set high reference value
-                        }
-                        break;
-
-                    case 3:
-                        // Save 20mA measurement data
-                        for (int i = 1; i < FMeasHigh.Length; i++)
-                        {
-                            FMeasHigh[i - 1] = FMeasHigh[i];
-                        }
-                        FMeasHigh[FMeasHigh.Length - 1] = double.Parse(strVal);
-
-                        // Check if buffer is filled
-                        if (FMeasCount < FMeasHigh.Length)
-                        {
-                            FMeasCount++;
-                        }
-                        else
-                        {
-                            // Analyze 20mA data
-                            for (int i = 0; i < FMeasHigh.Length; i++)
-                            {
-                                for (int j = 0; j < FMeasHigh.Length; j++)
-                                {
-                                    double value = Math.Abs(FMeasHigh[i] - FMeasHigh[j]);
-                                    if (value > refError) return;
-                                }
-                            }
-
-                            // Calculate calibration offset and gain
-                            double measLow = FMeasLow[CALI_BUFF_MAX - 1];
-                            double measHigh = FMeasHigh[CALI_BUFF_MAX - 1];
-                            float gain = (float)((HIGH_REF_mA - LOW_REF_mA) / (measHigh - measLow));
-                            float offset = (float)(LOW_REF_mA - (measLow * gain));
-
-                            string txStr = "#O3" + GetFloatToStr(offset) + GetFloatToStr(gain);
-                            Com2_TxStr(txStr);  // Send calibration values
-                            FRunStep++;
-                        }
-                        break;
-
-                    case 4:
-                        // Final calibration step, if needed
+                        // 이후 단계 로직 작성
                         break;
                 }
             }
             else
             {
-                if (Panel_Ref.Tag.ToString() != "0")
+                if (Panel_Ref.Tag?.ToString() != "0")
                 {
                     SetRef_mA(0);
                 }
@@ -688,23 +786,41 @@ namespace p_1_Delphi_to_C_sharp
 
         private void RunTestPres()
         {
-            string strVal = Panel_MeasValue.Text;
+            if (!string.IsNullOrEmpty(FCom2_RxStr))
+            {   //테스트
+                Console.WriteLine($"[RunTestPres] Received FCom2_RxStr: {FCom2_RxStr}");
+                Panel_MeasValue.Text = FCom2_RxStr;
+                //테스트
 
-            if (strVal != STR_NON_VALUE && !string.IsNullOrEmpty(strVal))
-            {
-                switch (FRunStep)
+                // FCom2_RxStr을 이용하여 수신된 차압 데이터를 변환
+                if (double.TryParse(FCom2_RxStr, out double pressureValue))
                 {
-                    case 0:
-                        Label_Message.Text = "차압 검증 중...";
-                        break;
+                    // 차압 값 표시
+                    Panel_MeasValue.Text = pressureValue.ToString("0.0");
+
+                    // Panel_Message 및 Label_Message 업데이트
+                    Label_Message.Text = $"현재 차압 값: {pressureValue} mH2O";
+                    Panel_Message.BackColor = pressureValue > 0 ? Color.Lime : Color.Yellow;
                 }
+                else
+                {
+                    // 데이터가 유효하지 않은 경우 기본값 설정
+                    Panel_MeasValue.Text = STR_NON_VALUE;
+                    Label_Message.Text = "차압 데이터 없음";
+                    Panel_Message.BackColor = Color.Gray;
+                }
+
+                FCom2_RxStr = ""; // 처리 후 데이터 초기화
             }
             else
             {
-                FRunStep = 0;
-                FTimerSec = 0;
+                // 데이터 수신 대기 상태 표시
+                Panel_MeasValue.Text = STR_NON_VALUE;
+                Label_Message.Text = "차압 검증 모드 대기 중";
+                Panel_Message.BackColor = Color.Yellow;
             }
         }
+
         private void RunSetupPres()
         {
             string strVal = Panel_MeasValue.Text;
@@ -775,7 +891,33 @@ namespace p_1_Delphi_to_C_sharp
 
         private void Button_Start_Click(object sender, EventArgs e)
         {
+            try
+            {
+                if (!ComPort1.IsOpen) ComPort1.Open();
+                if (!ComPort2.IsOpen) ComPort2.Open(); // ComPort2가 열리는지 확인
 
+                if (ComPort2.IsOpen)
+                {
+                    Debug.WriteLine("ComPort2가 성공적으로 열렸습니다.");
+                }
+                else
+                {
+                    Debug.WriteLine("ComPort2를 열 수 없습니다.");
+                }
+
+                ComboBox_ComPort1.Enabled = false;
+                ComboBox_ComPort2.Enabled = false;
+
+                ToggleAutoLoop(true);
+                Timer_RunProcess.Start();
+
+                ExecuteRunMode();
+                MessageBox.Show("통신 시작 및 선택된 작업 실행 중...");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("포트를 열 수 없습니다: " + ex.Message);
+            }
         }
 
 
@@ -799,16 +941,24 @@ public class IniFile
         filePath = path;
     }
 
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+    private static extern int GetPrivateProfileString(
+        string section, string key, string defaultValue, StringBuilder returnValue, int size, string filePath);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+    private static extern bool WritePrivateProfileString(
+        string section, string key, string value, string filePath);
+
     public void WriteString(string section, string key, string value)
     {
-        // 섹션과 키에 따라 설정 값을 파일에 저장하는 코드 작성
-        // 예시: WinAPI WritePrivateProfileString 사용 가능
+        WritePrivateProfileString(section, key, value, filePath);
     }
 
     public string ReadString(string section, string key, string defaultValue)
     {
-        // 설정 파일에서 값을 읽어 반환하는 코드 작성
-        return defaultValue; // 예시를 위한 기본값 반환
+        StringBuilder temp = new StringBuilder(255);
+        GetPrivateProfileString(section, key, defaultValue, temp, 255, filePath);
+        return temp.ToString();
     }
 }
 

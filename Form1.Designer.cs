@@ -42,6 +42,14 @@
             this.LED = new System.Windows.Forms.PictureBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.Button_OutputCalibrate = new System.Windows.Forms.Button();
+            this.Button_Measure = new System.Windows.Forms.Button();
+            this.Button_OutputCheck = new System.Windows.Forms.Button();
+            this.Button_PressureCalibrate = new System.Windows.Forms.Button();
+            this.Button_PressureCheck = new System.Windows.Forms.Button();
+            this.Panel_Message = new System.Windows.Forms.Panel();
+            this.Label_Message = new System.Windows.Forms.Label();
+            this.Button_PSetValue = new System.Windows.Forms.Button();
             this.label17 = new System.Windows.Forms.Label();
             this.Label_MeasError = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -60,6 +68,8 @@
             this.Button_Stop = new System.Windows.Forms.Button();
             this.Button_Start = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label15 = new System.Windows.Forms.Label();
+            this.ComboBox_ComPort1 = new System.Windows.Forms.ComboBox();
             this.CheckBox_RxHexView = new System.Windows.Forms.CheckBox();
             this.Button_SetOut20mA = new System.Windows.Forms.Button();
             this.Button_PZero = new System.Windows.Forms.Button();
@@ -80,19 +90,18 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelStep = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelTime = new System.Windows.Forms.ToolStripStatusLabel();
-            this.Label_Message = new System.Windows.Forms.Label();
-            this.Button_PSetValue = new System.Windows.Forms.Button();
-            this.Panel_Message = new System.Windows.Forms.Panel();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.LED)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.Panel_Message.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LED_Rx2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LED_Rx1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LED_Tx2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LED_Tx1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.Panel_Message.SuspendLayout();
             this.SuspendLayout();
             // 
             // Edit_AOffset
@@ -215,6 +224,11 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.Button_OutputCalibrate);
+            this.tabPage1.Controls.Add(this.Button_Measure);
+            this.tabPage1.Controls.Add(this.Button_OutputCheck);
+            this.tabPage1.Controls.Add(this.Button_PressureCalibrate);
+            this.tabPage1.Controls.Add(this.Button_PressureCheck);
             this.tabPage1.Controls.Add(this.Panel_Message);
             this.tabPage1.Controls.Add(this.Button_PSetValue);
             this.tabPage1.Controls.Add(this.label17);
@@ -253,6 +267,87 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // Button_OutputCalibrate
+            // 
+            this.Button_OutputCalibrate.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Button_OutputCalibrate.Location = new System.Drawing.Point(202, 179);
+            this.Button_OutputCalibrate.Name = "Button_OutputCalibrate";
+            this.Button_OutputCalibrate.Size = new System.Drawing.Size(75, 36);
+            this.Button_OutputCalibrate.TabIndex = 48;
+            this.Button_OutputCalibrate.Text = "출력 교정";
+            this.Button_OutputCalibrate.UseVisualStyleBackColor = true;
+            this.Button_OutputCalibrate.Click += new System.EventHandler(this.Button_OutputCalibrate_Click);
+            // 
+            // Button_Measure
+            // 
+            this.Button_Measure.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Button_Measure.Location = new System.Drawing.Point(12, 179);
+            this.Button_Measure.Name = "Button_Measure";
+            this.Button_Measure.Size = new System.Drawing.Size(103, 78);
+            this.Button_Measure.TabIndex = 44;
+            this.Button_Measure.Text = "측 정";
+            this.Button_Measure.UseVisualStyleBackColor = true;
+            this.Button_Measure.Click += new System.EventHandler(this.Button_Measure_Click);
+            // 
+            // Button_OutputCheck
+            // 
+            this.Button_OutputCheck.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Button_OutputCheck.Location = new System.Drawing.Point(121, 179);
+            this.Button_OutputCheck.Name = "Button_OutputCheck";
+            this.Button_OutputCheck.Size = new System.Drawing.Size(75, 36);
+            this.Button_OutputCheck.TabIndex = 41;
+            this.Button_OutputCheck.Text = "출력 검증";
+            this.Button_OutputCheck.UseVisualStyleBackColor = true;
+            this.Button_OutputCheck.Click += new System.EventHandler(this.Button_OutputCheck_Click);
+            // 
+            // Button_PressureCalibrate
+            // 
+            this.Button_PressureCalibrate.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Button_PressureCalibrate.Location = new System.Drawing.Point(202, 221);
+            this.Button_PressureCalibrate.Name = "Button_PressureCalibrate";
+            this.Button_PressureCalibrate.Size = new System.Drawing.Size(75, 36);
+            this.Button_PressureCalibrate.TabIndex = 40;
+            this.Button_PressureCalibrate.Text = "차압 교정";
+            this.Button_PressureCalibrate.UseVisualStyleBackColor = true;
+            this.Button_PressureCalibrate.Click += new System.EventHandler(this.Button_PressureCalibrate_Click);
+            // 
+            // Button_PressureCheck
+            // 
+            this.Button_PressureCheck.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.Button_PressureCheck.Location = new System.Drawing.Point(121, 221);
+            this.Button_PressureCheck.Name = "Button_PressureCheck";
+            this.Button_PressureCheck.Size = new System.Drawing.Size(75, 36);
+            this.Button_PressureCheck.TabIndex = 38;
+            this.Button_PressureCheck.Text = "차압 검증";
+            this.Button_PressureCheck.UseVisualStyleBackColor = true;
+            this.Button_PressureCheck.Click += new System.EventHandler(this.Button_PressureCheck_Click);
+            // 
+            // Panel_Message
+            // 
+            this.Panel_Message.Controls.Add(this.Label_Message);
+            this.Panel_Message.Location = new System.Drawing.Point(12, 6);
+            this.Panel_Message.Name = "Panel_Message";
+            this.Panel_Message.Size = new System.Drawing.Size(497, 63);
+            this.Panel_Message.TabIndex = 35;
+            // 
+            // Label_Message
+            // 
+            this.Label_Message.BackColor = System.Drawing.Color.Transparent;
+            this.Label_Message.Location = new System.Drawing.Point(114, 14);
+            this.Label_Message.Name = "Label_Message";
+            this.Label_Message.Size = new System.Drawing.Size(259, 40);
+            this.Label_Message.TabIndex = 33;
+            this.Label_Message.Text = "라벨";
+            // 
+            // Button_PSetValue
+            // 
+            this.Button_PSetValue.Location = new System.Drawing.Point(438, 199);
+            this.Button_PSetValue.Name = "Button_PSetValue";
+            this.Button_PSetValue.Size = new System.Drawing.Size(71, 41);
+            this.Button_PSetValue.TabIndex = 34;
+            this.Button_PSetValue.Text = "설 정";
+            this.Button_PSetValue.UseVisualStyleBackColor = true;
             // 
             // label17
             // 
@@ -406,6 +501,7 @@
             this.Button_Stop.TabIndex = 13;
             this.Button_Stop.Text = "STOP";
             this.Button_Stop.UseVisualStyleBackColor = true;
+            this.Button_Stop.Click += new System.EventHandler(this.Button_Stop_Click);
             // 
             // Button_Start
             // 
@@ -419,6 +515,10 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label19);
+            this.tabPage2.Controls.Add(this.label18);
+            this.tabPage2.Controls.Add(this.label15);
+            this.tabPage2.Controls.Add(this.ComboBox_ComPort1);
             this.tabPage2.Controls.Add(this.CheckBox_RxHexView);
             this.tabPage2.Controls.Add(this.Button_SetOut20mA);
             this.tabPage2.Controls.Add(this.Button_PZero);
@@ -443,6 +543,26 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label15.Font = new System.Drawing.Font("굴림", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label15.Location = new System.Drawing.Point(21, 26);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(60, 21);
+            this.label15.TabIndex = 20;
+            this.label15.Text = "PORT";
+            // 
+            // ComboBox_ComPort1
+            // 
+            this.ComboBox_ComPort1.Font = new System.Drawing.Font("굴림", 9.75F);
+            this.ComboBox_ComPort1.FormattingEnabled = true;
+            this.ComboBox_ComPort1.Location = new System.Drawing.Point(120, 26);
+            this.ComboBox_ComPort1.Name = "ComboBox_ComPort1";
+            this.ComboBox_ComPort1.Size = new System.Drawing.Size(74, 21);
+            this.ComboBox_ComPort1.TabIndex = 19;
             // 
             // CheckBox_RxHexView
             // 
@@ -638,31 +758,25 @@
             this.toolStripStatusLabelTime.Size = new System.Drawing.Size(36, 17);
             this.toolStripStatusLabelTime.Text = "Time";
             // 
-            // Label_Message
+            // label18
             // 
-            this.Label_Message.BackColor = System.Drawing.Color.Transparent;
-            this.Label_Message.Location = new System.Drawing.Point(114, 14);
-            this.Label_Message.Name = "Label_Message";
-            this.Label_Message.Size = new System.Drawing.Size(259, 40);
-            this.Label_Message.TabIndex = 33;
-            this.Label_Message.Text = "라벨";
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label18.Location = new System.Drawing.Point(19, 14);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(69, 12);
+            this.label18.TabIndex = 21;
+            this.label18.Text = "I/O Board";
             // 
-            // Button_PSetValue
+            // label19
             // 
-            this.Button_PSetValue.Location = new System.Drawing.Point(438, 199);
-            this.Button_PSetValue.Name = "Button_PSetValue";
-            this.Button_PSetValue.Size = new System.Drawing.Size(71, 41);
-            this.Button_PSetValue.TabIndex = 34;
-            this.Button_PSetValue.Text = "설 정";
-            this.Button_PSetValue.UseVisualStyleBackColor = true;
-            // 
-            // Panel_Message
-            // 
-            this.Panel_Message.Controls.Add(this.Label_Message);
-            this.Panel_Message.Location = new System.Drawing.Point(12, 6);
-            this.Panel_Message.Name = "Panel_Message";
-            this.Panel_Message.Size = new System.Drawing.Size(497, 63);
-            this.Panel_Message.TabIndex = 35;
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label19.Location = new System.Drawing.Point(18, 124);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(100, 12);
+            this.label19.TabIndex = 22;
+            this.label19.Text = "차압계 - 테스트";
             // 
             // Form1
             // 
@@ -678,6 +792,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.Panel_Message.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.LED_Rx2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LED_Rx1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LED_Tx2)).EndInit();
@@ -686,7 +801,6 @@
             this.tabPage2.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.Panel_Message.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -749,6 +863,15 @@
         private System.Windows.Forms.Label Label_Message;
         private System.Windows.Forms.Button Button_PSetValue;
         private System.Windows.Forms.Panel Panel_Message;
+        private System.Windows.Forms.Button Button_PressureCalibrate;
+        private System.Windows.Forms.Button Button_PressureCheck;
+        private System.Windows.Forms.Button Button_OutputCheck;
+        private System.Windows.Forms.Button Button_Measure;
+        private System.Windows.Forms.Button Button_OutputCalibrate;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ComboBox ComboBox_ComPort1;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label18;
     }
 }
 
